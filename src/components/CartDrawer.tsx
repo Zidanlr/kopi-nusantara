@@ -273,7 +273,14 @@ export function CartDrawer() {
           }}
         />
       )}
-      <OrderHistoryModal open={historyOpen} onClose={() => setHistoryOpen(false)} />
+      <OrderHistoryModal
+        open={historyOpen}
+        onClose={() => {
+          setHistoryOpen(false);
+          refreshCount();
+        }}
+        onCountChange={updateCount}
+      />
     </>
   );
 }
