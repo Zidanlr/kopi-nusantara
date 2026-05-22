@@ -63,6 +63,7 @@ export function CartDrawer() {
     const orderItems = items.map((i) => ({
       menu_id: i.menu_id,
       menu_name: i.menu_name,
+      gambar_url: i.gambar_url,
       qty: i.qty,
       price: i.price,
       sugar_level: i.sugar_level,
