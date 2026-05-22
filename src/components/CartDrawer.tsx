@@ -1,10 +1,11 @@
 import { useState } from "react";
-import { X, Plus, Minus, Trash2, ShoppingBag } from "lucide-react";
+import { X, Plus, Minus, Trash2, ShoppingBag, Receipt } from "lucide-react";
 import { useCart, type SugarLevel } from "@/lib/cart";
 import { formatIDR, generateOrderCode } from "@/lib/format";
 import { supabase } from "@/integrations/supabase/client";
-import menuPlaceholder from "@/assets/menu-placeholder.jpg";
+import { MenuImage } from "@/components/MenuImage";
 import { PaymentModal, type PaymentResult } from "./PaymentModal";
+import { OrderHistoryModal } from "./OrderHistoryModal";
 
 const SUGAR_OPTIONS: SugarLevel[] = ["Normal", "Less Sugar", "No Sugar"];
 const BANKS = ["BCA", "Mandiri", "BRI", "BNI"] as const;
@@ -19,6 +20,7 @@ export function CartDrawer() {
     va?: string;
   }>(null);
   const [success, setSuccess] = useState<PaymentResult | null>(null);
+  const [historyOpen, setHistoryOpen] = useState(false);
 
   const canCheckout = items.length > 0 && (method === "QRIS" || (method === "Bank Transfer" && bank));
 

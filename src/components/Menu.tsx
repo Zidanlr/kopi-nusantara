@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { Plus } from "lucide-react";
-import menuPlaceholder from "@/assets/menu-placeholder.jpg";
+import { MenuImage } from "@/components/MenuImage";
 import { formatIDR } from "@/lib/format";
 import { useCart, type MenuItem } from "@/lib/cart";
 
@@ -65,10 +65,9 @@ export function Menu({ items, loading }: Props) {
                 className="group bg-card rounded-3xl overflow-hidden shadow-soft hover:shadow-elegant transition-all hover:-translate-y-1"
               >
                 <div className="relative h-56 overflow-hidden">
-                  <img
-                    src={m.gambar || menuPlaceholder}
+                  <MenuImage
+                    src={m.gambar_url}
                     alt={m.nama_menu}
-                    loading="lazy"
                     className="size-full object-cover group-hover:scale-105 transition-transform duration-700"
                   />
                   {m.kategori && (
