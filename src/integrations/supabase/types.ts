@@ -14,7 +14,186 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      about: {
+        Row: {
+          created_at: string
+          deskripsi: string | null
+          gambar: string | null
+          id: string
+          judul: string
+        }
+        Insert: {
+          created_at?: string
+          deskripsi?: string | null
+          gambar?: string | null
+          id?: string
+          judul: string
+        }
+        Update: {
+          created_at?: string
+          deskripsi?: string | null
+          gambar?: string | null
+          id?: string
+          judul?: string
+        }
+        Relationships: []
+      }
+      hero: {
+        Row: {
+          background_image: string | null
+          created_at: string
+          cta_text: string | null
+          headline: string
+          id: string
+          subheadline: string | null
+        }
+        Insert: {
+          background_image?: string | null
+          created_at?: string
+          cta_text?: string | null
+          headline: string
+          id?: string
+          subheadline?: string | null
+        }
+        Update: {
+          background_image?: string | null
+          created_at?: string
+          cta_text?: string | null
+          headline?: string
+          id?: string
+          subheadline?: string | null
+        }
+        Relationships: []
+      }
+      menu: {
+        Row: {
+          allow_sugar_level: boolean
+          created_at: string
+          deskripsi: string | null
+          gambar: string | null
+          harga: number
+          id: string
+          kategori: string | null
+          nama_menu: string
+          sort_order: number
+        }
+        Insert: {
+          allow_sugar_level?: boolean
+          created_at?: string
+          deskripsi?: string | null
+          gambar?: string | null
+          harga?: number
+          id?: string
+          kategori?: string | null
+          nama_menu: string
+          sort_order?: number
+        }
+        Update: {
+          allow_sugar_level?: boolean
+          created_at?: string
+          deskripsi?: string | null
+          gambar?: string | null
+          harga?: number
+          id?: string
+          kategori?: string | null
+          nama_menu?: string
+          sort_order?: number
+        }
+        Relationships: []
+      }
+      pesanan: {
+        Row: {
+          bank_selected: string | null
+          catatan: string | null
+          created_at: string
+          id: string
+          items: Json
+          kode_pesanan: string
+          metode_pembayaran: string
+          nama_pelanggan: string | null
+          payment_reference: string | null
+          status: string
+          subtotal: number
+        }
+        Insert: {
+          bank_selected?: string | null
+          catatan?: string | null
+          created_at?: string
+          id?: string
+          items?: Json
+          kode_pesanan: string
+          metode_pembayaran: string
+          nama_pelanggan?: string | null
+          payment_reference?: string | null
+          status?: string
+          subtotal?: number
+        }
+        Update: {
+          bank_selected?: string | null
+          catatan?: string | null
+          created_at?: string
+          id?: string
+          items?: Json
+          kode_pesanan?: string
+          metode_pembayaran?: string
+          nama_pelanggan?: string | null
+          payment_reference?: string | null
+          status?: string
+          subtotal?: number
+        }
+        Relationships: []
+      }
+      sosial_media: {
+        Row: {
+          alamat: string | null
+          created_at: string
+          id: string
+          instagram: string | null
+          jam_operasional: string | null
+          whatsapp: string | null
+        }
+        Insert: {
+          alamat?: string | null
+          created_at?: string
+          id?: string
+          instagram?: string | null
+          jam_operasional?: string | null
+          whatsapp?: string | null
+        }
+        Update: {
+          alamat?: string | null
+          created_at?: string
+          id?: string
+          instagram?: string | null
+          jam_operasional?: string | null
+          whatsapp?: string | null
+        }
+        Relationships: []
+      }
+      testimonials: {
+        Row: {
+          created_at: string
+          foto: string | null
+          id: string
+          nama: string
+          review: string
+        }
+        Insert: {
+          created_at?: string
+          foto?: string | null
+          id?: string
+          nama: string
+          review: string
+        }
+        Update: {
+          created_at?: string
+          foto?: string | null
+          id?: string
+          nama?: string
+          review?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
