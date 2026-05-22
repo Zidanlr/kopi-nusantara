@@ -1,10 +1,11 @@
 import { useState } from "react";
-import { X, Plus, Minus, Trash2, ShoppingBag } from "lucide-react";
+import { X, Plus, Minus, Trash2, ShoppingBag, Receipt } from "lucide-react";
 import { useCart, type SugarLevel } from "@/lib/cart";
 import { formatIDR, generateOrderCode } from "@/lib/format";
 import { supabase } from "@/integrations/supabase/client";
-import menuPlaceholder from "@/assets/menu-placeholder.jpg";
+import { MenuImage } from "@/components/MenuImage";
 import { PaymentModal, type PaymentResult } from "./PaymentModal";
+import { OrderHistoryModal } from "./OrderHistoryModal";
 
 const SUGAR_OPTIONS: SugarLevel[] = ["Normal", "Less Sugar", "No Sugar"];
 const BANKS = ["BCA", "Mandiri", "BRI", "BNI"] as const;
@@ -19,6 +20,7 @@ export function CartDrawer() {
     va?: string;
   }>(null);
   const [success, setSuccess] = useState<PaymentResult | null>(null);
+  const [historyOpen, setHistoryOpen] = useState(false);
 
   const canCheckout = items.length > 0 && (method === "QRIS" || (method === "Bank Transfer" && bank));
 
@@ -87,13 +89,21 @@ export function CartDrawer() {
             <h3 className="font-display text-2xl text-primary">Pesanan Anda</h3>
             <p className="text-xs text-muted-foreground mt-0.5">{totalQty} item</p>
           </div>
-          <button
-            onClick={closeCart}
-            className="size-9 rounded-full bg-card hover:bg-muted flex items-center justify-center"
-            aria-label="Tutup"
-          >
-            <X className="size-5" />
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setHistoryOpen(true)}
+              className="inline-flex items-center gap-1.5 h-9 px-3 rounded-full bg-card hover:bg-muted text-xs font-semibold text-primary"
+            >
+              <Receipt className="size-4" /> Kode Pesanan
+            </button>
+            <button
+              onClick={closeCart}
+              className="size-9 rounded-full bg-card hover:bg-muted flex items-center justify-center"
+              aria-label="Tutup"
+            >
+              <X className="size-5" />
+            </button>
+          </div>
         </header>
 
         <div className="flex-1 overflow-y-auto px-6 py-4 space-y-4">
@@ -107,8 +117,8 @@ export function CartDrawer() {
             items.map((i) => (
               <div key={i.key} className="bg-card rounded-2xl p-4 shadow-soft">
                 <div className="flex gap-3">
-                  <img
-                    src={i.gambar || menuPlaceholder}
+                  <MenuImage
+                    src={i.gambar_url}
                     alt={i.menu_name}
                     className="size-16 rounded-xl object-cover"
                   />
@@ -230,6 +240,7 @@ export function CartDrawer() {
           }}
         />
       )}
+      <OrderHistoryModal open={historyOpen} onClose={() => setHistoryOpen(false)} />
     </>
   );
 }

@@ -70,7 +70,7 @@ export type Database = {
           allow_sugar_level: boolean
           created_at: string
           deskripsi: string | null
-          gambar: string | null
+          gambar_url: string | null
           harga: number
           id: string
           kategori: string | null
@@ -81,7 +81,7 @@ export type Database = {
           allow_sugar_level?: boolean
           created_at?: string
           deskripsi?: string | null
-          gambar?: string | null
+          gambar_url?: string | null
           harga?: number
           id?: string
           kategori?: string | null
@@ -92,7 +92,7 @@ export type Database = {
           allow_sugar_level?: boolean
           created_at?: string
           deskripsi?: string | null
-          gambar?: string | null
+          gambar_url?: string | null
           harga?: number
           id?: string
           kategori?: string | null
