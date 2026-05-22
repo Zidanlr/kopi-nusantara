@@ -20,9 +20,10 @@ interface OrderRow {
 interface Props {
   open: boolean;
   onClose: () => void;
+  onCountChange?: (count: number) => void;
 }
 
-export function OrderHistoryModal({ open, onClose }: Props) {
+export function OrderHistoryModal({ open, onClose, onCountChange }: Props) {
   const [orders, setOrders] = useState<OrderRow[]>([]);
   const [loading, setLoading] = useState(false);
   const [confirm, setConfirm] = useState<
@@ -38,7 +39,9 @@ export function OrderHistoryModal({ open, onClose }: Props) {
         "id, kode_pesanan, metode_pembayaran, bank_selected, payment_reference, subtotal, status, created_at, items",
       )
       .order("created_at", { ascending: false });
-    setOrders((data as unknown as OrderRow[]) ?? []);
+    const rows = (data as unknown as OrderRow[]) ?? [];
+    setOrders(rows);
+    onCountChange?.(rows.length);
     setLoading(false);
   };
 
@@ -51,7 +54,11 @@ export function OrderHistoryModal({ open, onClose }: Props) {
     if (confirm.type === "one") {
       const { error } = await supabase.from("pesanan").delete().eq("id", confirm.id);
       if (error) return toast.error("Gagal menghapus pesanan");
-      setOrders((prev) => prev.filter((o) => o.id !== confirm.id));
+      setOrders((prev) => {
+        const next = prev.filter((o) => o.id !== confirm.id);
+        onCountChange?.(next.length);
+        return next;
+      });
       toast.success(`Kode ${confirm.code} dihapus`);
     } else {
       const ids = orders.map((o) => o.id);
@@ -59,6 +66,7 @@ export function OrderHistoryModal({ open, onClose }: Props) {
       const { error } = await supabase.from("pesanan").delete().in("id", ids);
       if (error) return toast.error("Gagal menghapus semua pesanan");
       setOrders([]);
+      onCountChange?.(0);
       toast.success("Semua kode pesanan dihapus");
     }
     setConfirm(null);
