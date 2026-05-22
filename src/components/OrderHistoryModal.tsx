@@ -33,13 +33,25 @@ export function OrderHistoryModal({ open, onClose, onCountChange }: Props) {
 
   const load = async () => {
     setLoading(true);
-    const { data } = await supabase
-      .from("pesanan")
-      .select(
-        "id, kode_pesanan, metode_pembayaran, bank_selected, payment_reference, subtotal, status, created_at, items",
-      )
-      .order("created_at", { ascending: false });
-    const rows = (data as unknown as OrderRow[]) ?? [];
+    const [{ data }, { data: menus }] = await Promise.all([
+      supabase
+        .from("pesanan")
+        .select(
+          "id, kode_pesanan, metode_pembayaran, bank_selected, payment_reference, subtotal, status, created_at, items",
+        )
+        .order("created_at", { ascending: false }),
+      supabase.from("menu").select("id, gambar_url"),
+    ]);
+    const menuMap = new Map<string, string | null>(
+      (menus ?? []).map((m: { id: string; gambar_url: string | null }) => [m.id, m.gambar_url]),
+    );
+    const rows = ((data as unknown as OrderRow[]) ?? []).map((o) => ({
+      ...o,
+      items: (o.items ?? []).map((it) => ({
+        ...it,
+        gambar_url: it.gambar_url ?? (it.menu_id ? menuMap.get(it.menu_id) ?? null : null),
+      })),
+    }));
     setOrders(rows);
     onCountChange?.(rows.length);
     setLoading(false);
