@@ -116,13 +116,17 @@ function RootComponent() {
     <QueryClientProvider client={queryClient}>
       <Outlet />
       <Toaster
-        position="top-right"
-        richColors
-        closeButton
+        position="top-center"
+        offset={80}
+        duration={2500}
         toastOptions={{
+          unstyled: true,
           classNames: {
             toast:
-              "bg-background/95 backdrop-blur-xl border border-border shadow-elegant rounded-2xl",
+              "flex items-center gap-3 px-5 py-3.5 rounded-2xl border border-accent/30 bg-background/85 backdrop-blur-xl shadow-elegant text-primary min-w-[280px] animate-scale-in",
+            title: "font-display text-[15px] tracking-tight text-primary",
+            description: "text-xs text-muted-foreground mt-0.5",
+            icon: "size-9 rounded-full bg-accent/15 text-accent flex items-center justify-center shrink-0",
           },
         }}
       />
