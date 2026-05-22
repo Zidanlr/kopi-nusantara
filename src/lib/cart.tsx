@@ -1,4 +1,6 @@
 import { createContext, useContext, useState, ReactNode, useCallback } from "react";
+import { toast } from "sonner";
+import { Check } from "lucide-react";
 
 export type SugarLevel = "Normal" | "Less Sugar" | "No Sugar";
 
@@ -8,7 +10,7 @@ export interface MenuItem {
   deskripsi: string | null;
   harga: number;
   kategori: string | null;
-  gambar: string | null;
+  gambar_url: string | null;
   allow_sugar_level: boolean;
 }
 
@@ -19,7 +21,7 @@ export interface CartItem {
   price: number;
   qty: number;
   sugar_level: SugarLevel | null;
-  gambar: string | null;
+  gambar_url: string | null;
   allow_sugar_level: boolean;
 }
 
@@ -65,12 +67,16 @@ export function CartProvider({ children }: { children: ReactNode }) {
           price: m.harga,
           qty: 1,
           sugar_level: sugar,
-          gambar: m.gambar,
+          gambar_url: m.gambar_url,
           allow_sugar_level: m.allow_sugar_level,
         },
       ];
     });
-    setIsOpen(true);
+    toast.success("Pesanan berhasil ditambahkan", {
+      description: m.nama_menu,
+      icon: <Check className="size-4" />,
+      duration: 2200,
+    });
   }, []);
 
   const inc = useCallback((key: string) => {
@@ -94,7 +100,6 @@ export function CartProvider({ children }: { children: ReactNode }) {
       const target = prev.find((i) => i.key === key);
       if (!target) return prev;
       const newKey = keyFor(target.menu_id, sugar);
-      // merge if newKey already exists
       const existing = prev.find((i) => i.key === newKey && i.key !== key);
       if (existing) {
         return prev
