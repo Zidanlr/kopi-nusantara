@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { X, Plus, Minus, Trash2, ShoppingBag, Receipt } from "lucide-react";
 import { useCart, type SugarLevel } from "@/lib/cart";
 import { formatIDR, generateOrderCode } from "@/lib/format";
@@ -21,6 +21,30 @@ export function CartDrawer() {
   }>(null);
   const [success, setSuccess] = useState<PaymentResult | null>(null);
   const [historyOpen, setHistoryOpen] = useState(false);
+  const [orderCount, setOrderCount] = useState(0);
+  const [badgeKey, setBadgeKey] = useState(0);
+
+  const refreshCount = async () => {
+    const { count } = await supabase
+      .from("pesanan")
+      .select("id", { count: "exact", head: true });
+    setOrderCount((prev) => {
+      const next = count ?? 0;
+      if (next !== prev) setBadgeKey((k) => k + 1);
+      return next;
+    });
+  };
+
+  useEffect(() => {
+    refreshCount();
+  }, []);
+
+  const updateCount = (n: number) => {
+    setOrderCount((prev) => {
+      if (n !== prev) setBadgeKey((k) => k + 1);
+      return n;
+    });
+  };
 
   const canCheckout = items.length > 0 && (method === "QRIS" || (method === "Bank Transfer" && bank));
 
@@ -66,6 +90,7 @@ export function CartDrawer() {
       status: "Menunggu Konfirmasi",
     });
     clear();
+    updateCount(orderCount + 1);
   };
 
   return (
@@ -92,9 +117,17 @@ export function CartDrawer() {
           <div className="flex items-center gap-2">
             <button
               onClick={() => setHistoryOpen(true)}
-              className="inline-flex items-center gap-1.5 h-9 px-3 rounded-full bg-card hover:bg-muted text-xs font-semibold text-primary"
+              className="relative inline-flex items-center gap-1.5 h-9 px-3 rounded-full bg-card hover:bg-muted text-xs font-semibold text-primary transition-colors"
             >
               <Receipt className="size-4" /> Kode Pesanan
+              {orderCount > 0 && (
+                <span
+                  key={badgeKey}
+                  className="animate-badge-pop absolute -top-1.5 -right-1.5 min-w-[20px] h-5 px-1.5 rounded-full bg-accent text-accent-foreground text-[10px] font-bold flex items-center justify-center shadow-soft ring-2 ring-background"
+                >
+                  {orderCount > 99 ? "99+" : orderCount}
+                </span>
+              )}
             </button>
             <button
               onClick={closeCart}
@@ -240,7 +273,14 @@ export function CartDrawer() {
           }}
         />
       )}
-      <OrderHistoryModal open={historyOpen} onClose={() => setHistoryOpen(false)} />
+      <OrderHistoryModal
+        open={historyOpen}
+        onClose={() => {
+          setHistoryOpen(false);
+          refreshCount();
+        }}
+        onCountChange={updateCount}
+      />
     </>
   );
 }

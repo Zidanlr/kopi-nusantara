@@ -1,3 +1,4 @@
+import { useEffect, useState, useCallback } from "react";
 import { X, Receipt } from "lucide-react";
 import { formatIDR } from "@/lib/format";
 import { MenuImage } from "@/components/MenuImage";
@@ -30,21 +31,50 @@ interface Props {
 }
 
 export function OrderDetailModal({ order, onClose }: Props) {
+  const [closing, setClosing] = useState(false);
+
+  const handleClose = useCallback(() => {
+    if (closing) return;
+    setClosing(true);
+    window.setTimeout(() => {
+      setClosing(false);
+      onClose();
+    }, 200);
+  }, [closing, onClose]);
+
+  useEffect(() => {
+    if (!order) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") handleClose();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [order, handleClose]);
+
   if (!order) return null;
 
   return (
     <div
-      onClick={onClose}
-      className="fixed inset-0 z-[90] flex items-center justify-center bg-primary/70 backdrop-blur-md p-4 animate-fade-in"
+      onClick={handleClose}
+      className={`fixed inset-0 z-[90] flex items-center justify-center bg-primary/70 backdrop-blur-md p-4 ${
+        closing ? "animate-fade-out" : "animate-fade-in"
+      }`}
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="bg-background rounded-3xl shadow-elegant max-w-lg w-full max-h-[88vh] flex flex-col overflow-hidden animate-scale-in"
+        className={`bg-background rounded-3xl shadow-elegant max-w-lg w-full max-h-[88vh] flex flex-col overflow-hidden ${
+          closing ? "animate-scale-out" : "animate-scale-in"
+        }`}
       >
         <header className="relative p-6 pb-5 border-b border-border bg-gradient-to-br from-primary to-primary/85 text-primary-foreground">
           <button
-            onClick={onClose}
-            className="absolute top-4 right-4 size-9 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors"
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              handleClose();
+            }}
+            aria-label="Tutup"
+            className="absolute top-4 right-4 size-9 rounded-full bg-white/10 hover:bg-white/25 active:scale-95 flex items-center justify-center transition-all z-10"
           >
             <X className="size-5" />
           </button>
