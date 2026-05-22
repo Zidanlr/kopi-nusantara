@@ -28,7 +28,7 @@ export const Route = createFileRoute("/")({
   component: Page,
 });
 
-interface Hero {
+interface HeroData {
   headline: string;
   subheadline: string | null;
   cta_text: string | null;
@@ -41,7 +41,7 @@ interface AboutData {
 }
 
 function Page() {
-  const [hero, setHero] = useState<Hero | null>(null);
+  const [hero, setHero] = useState<HeroData | null>(null);
   const [about, setAbout] = useState<AboutData | null>(null);
   const [menu, setMenu] = useState<MenuItem[]>([]);
   const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
@@ -57,7 +57,7 @@ function Page() {
         supabase.from("testimonials").select("*").order("created_at"),
         supabase.from("sosial_media").select("*").limit(1).maybeSingle(),
       ]);
-      if (h.data) setHero(h.data as Hero);
+      if (h.data) setHero(h.data as HeroData);
       if (a.data) setAbout(a.data as AboutData);
       if (m.data) setMenu(m.data as MenuItem[]);
       if (t.data) setTestimonials(t.data as Testimonial[]);
