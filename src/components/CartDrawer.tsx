@@ -90,6 +90,7 @@ export function CartDrawer() {
       status: "Menunggu Konfirmasi",
     });
     clear();
+    updateCount(orderCount + 1);
   };
 
   return (
@@ -116,9 +117,17 @@ export function CartDrawer() {
           <div className="flex items-center gap-2">
             <button
               onClick={() => setHistoryOpen(true)}
-              className="inline-flex items-center gap-1.5 h-9 px-3 rounded-full bg-card hover:bg-muted text-xs font-semibold text-primary"
+              className="relative inline-flex items-center gap-1.5 h-9 px-3 rounded-full bg-card hover:bg-muted text-xs font-semibold text-primary transition-colors"
             >
               <Receipt className="size-4" /> Kode Pesanan
+              {orderCount > 0 && (
+                <span
+                  key={badgeKey}
+                  className="animate-badge-pop absolute -top-1.5 -right-1.5 min-w-[20px] h-5 px-1.5 rounded-full bg-accent text-accent-foreground text-[10px] font-bold flex items-center justify-center shadow-soft ring-2 ring-background"
+                >
+                  {orderCount > 99 ? "99+" : orderCount}
+                </span>
+              )}
             </button>
             <button
               onClick={closeCart}
