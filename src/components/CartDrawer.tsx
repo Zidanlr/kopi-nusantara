@@ -239,10 +239,8 @@ export function CartDrawer() {
             closeCart();
           }}
         />
+      )}
       <OrderHistoryModal open={historyOpen} onClose={() => setHistoryOpen(false)} />
     </>
-  );
-}
-// end
   );
 }
