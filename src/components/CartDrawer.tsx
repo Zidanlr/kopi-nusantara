@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { X, Plus, Minus, Trash2, ShoppingBag, Receipt } from "lucide-react";
 import { useCart, type SugarLevel } from "@/lib/cart";
 import { formatIDR, generateOrderCode } from "@/lib/format";
@@ -21,6 +21,30 @@ export function CartDrawer() {
   }>(null);
   const [success, setSuccess] = useState<PaymentResult | null>(null);
   const [historyOpen, setHistoryOpen] = useState(false);
+  const [orderCount, setOrderCount] = useState(0);
+  const [badgeKey, setBadgeKey] = useState(0);
+
+  const refreshCount = async () => {
+    const { count } = await supabase
+      .from("pesanan")
+      .select("id", { count: "exact", head: true });
+    setOrderCount((prev) => {
+      const next = count ?? 0;
+      if (next !== prev) setBadgeKey((k) => k + 1);
+      return next;
+    });
+  };
+
+  useEffect(() => {
+    refreshCount();
+  }, []);
+
+  const updateCount = (n: number) => {
+    setOrderCount((prev) => {
+      if (n !== prev) setBadgeKey((k) => k + 1);
+      return n;
+    });
+  };
 
   const canCheckout = items.length > 0 && (method === "QRIS" || (method === "Bank Transfer" && bank));
 
